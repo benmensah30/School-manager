@@ -1,6 +1,8 @@
 package com.example.schoolmanager.Controllers;
 
 import com.example.schoolmanager.IDBConfig.DatabaseDB;
+import com.example.schoolmanager.Interface.StudentInterface;
+import com.example.schoolmanager.models.Student;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -38,8 +40,19 @@ public class FormulaireController {
     private Button save;
 
     public void addStudent() {
-        String sql = "INSERT INTO student (firstname, lastname, dateOfBirth, placeOfBirth, state) VALUES (?, ?, ?, ?, ?)";
-        Connection connection = DatabaseDB.connectDB();
+
+        String name = nom.getText().trim();
+        String prenoms = prenom.getText().trim();
+        String dates = String.valueOf(date.getValue());
+        String lieu = naissance.getText().trim();
+        String etats = etat.getText().trim();
+
+        Student student = new Student();
+        student.setNom(name);
+        student.setPrenom(prenoms);
+        student.setNaissance(dates);
+        student.setLieuDeNaissance(lieu);
+        student.setEtat(etats);
 
         try {
 
@@ -57,18 +70,7 @@ public class FormulaireController {
                 alert.showAndWait();
 
             } else {
-
-                assert connection != null;
-                PreparedStatement prepStat = connection.prepareStatement(sql);
-                prepStat.setString(1, prenom.getText());
-                prepStat.setString(2, nom.getText());
-                prepStat.setString(3, String.valueOf(date.getValue()));
-                prepStat.setString(4, naissance.getText());
-                prepStat.setString(5, etat.getText());
-//                prepStat.setString(6, "info_S.getText()");
-
-                prepStat.executeUpdate();
-
+                student.studentAdd(student);
             }
 
         } catch (SQLException exception) {

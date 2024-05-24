@@ -2,6 +2,7 @@ package com.example.schoolmanager.Controllers;
 
 import com.example.schoolmanager.HelloApplication;
 import com.example.schoolmanager.IDBConfig.DatabaseDB;
+import com.example.schoolmanager.models.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,10 +27,6 @@ public class ConnectionController {
     @FXML
     private TextField usernameTF;
 
-    private PreparedStatement preparedStatement;
-    private Connection connection;
-    private ResultSet resultSet;
-
     //methode qui permet de passer de la page de connexion a la page d'inscription
     public void signUpConnect() throws IOException {
 
@@ -45,19 +42,13 @@ public class ConnectionController {
 
     public void ConnectBtn() throws IOException {
 
-        String sql = "SELECT * FROM user WHERE email = ? AND password = ?";
-        connection = DatabaseDB.connectDB();
-
         try {
 
             Alert alert;
 
-            assert connection != null;
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, usernameTF.getText());
-            preparedStatement.setString(2, passwordPF.getText());
+            User user = new User();
 
-            resultSet = preparedStatement.executeQuery();
+            user.userLogin(user);
 
             if (usernameTF.getText().isEmpty() || passwordPF.getText().isEmpty()) {
 
@@ -67,7 +58,7 @@ public class ConnectionController {
                 alert.setContentText("Remplir tout les champs");
                 alert.showAndWait();
 
-            } else if (resultSet.next()) {
+            } else if ((user.getResultSet()).next()) {
 
                 Parent good = FXMLLoader.load(Objects.requireNonNull(HelloApplication.class.getResource("acceuil.fxml")));
                 Stage stg = new Stage();
